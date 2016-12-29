@@ -1,2 +1,2 @@
-# Genetic-Confounding
+# Genetic Confounding
 Appendix and R Scripts
