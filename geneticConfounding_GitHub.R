@@ -5,6 +5,9 @@
 #                                                   version date: 7/2015
 # ----------------------------------------------------------------------------------------------------------------------------------
 
+# set the working directory
+setwd("/Users/jcbarnes/Desktop")
+
 # this simulation draws on the beta distribution
 # the user is encouraged to explore the beta distribution properties before proceeding
 # this will ensure that the estimates gleaned below are meaningful
@@ -66,27 +69,12 @@ confound<-function(a_x,b_x,a_y,b_y,a_p,b_p,rg,num_calcs) {
   
   # h2 for x
   hist(h2_x_pop,main=expression(italic(h^2)~"of menarche timing"),ylab="",xlab="",xlim=c(0,1),axes=F);axis(1)
-  # text for the mean, mode, and standard deviation (leave commented out if not desired)
-  #text(ifelse(min(h2_x_pop)<=.2,.9,.1),popN*.25,"empirical estimates:")
-  #text(ifelse(min(h2_x_pop)<=.2,.9,.1),popN*.20,paste("mean=",round(mean(h2_x_pop),3)))
-  #text(ifelse(min(h2_x_pop)<=.2,.9,.1),popN*.15,paste("mode=",round(estimate_mode(x=h2_x_pop),3))) 
-  #text(ifelse(min(h2_x_pop)<=.2,.9,.1),popN*.10,paste("sd=",round(sd(h2_x_pop),3))) 
   
   # h2 for y
   hist(h2_y_pop,main=expression(italic(h^2)~"of father absence"),ylab="",xlab="",xlim=c(0,1),axes=F);axis(1)
-  # text for the mean, mode, and standard deviation (leave commented out if not desired)
-  #text(ifelse(min(h2_y_pop)<=.2,.9,.1),popN*.25,"empirical estimates:")
-  #text(ifelse(min(h2_y_pop)<=.2,.9,.1),popN*.20,paste("mean=",round(mean(h2_y_pop),3)))
-  #text(ifelse(min(h2_y_pop)<=.2,.9,.1),popN*.15,paste("mode=",round(estimate_mode(x=h2_y_pop),3))) 
-  #text(ifelse(min(h2_y_pop)<=.2,.9,.1),popN*.10,paste("sd=",round(sd(h2_y_pop),3))) 
   
   # rp
   hist(r_p_pop,main=expression("phenotypic correlation"~(italic(r[p]))),ylab="",xlab="",xlim=c(0,1),axes=F);axis(1)
-  # text for the mean, mode, and standard deviation (leave commented out if not desired)
-  #text(ifelse(min(r_p_pop)<=.2,.9,.1),popN*.25,"empirical estimates:")
-  #text(ifelse(min(r_p_pop)<=.2,.9,.1),popN*.20,paste("mean=",round(mean(r_p_pop),3)))
-  #text(ifelse(min(r_p_pop)<=.2,.9,.1),popN*.15,paste("mode=",round(estimate_mode(x=r_p_pop),3))) 
-  #text(ifelse(min(r_p_pop)<=.2,.9,.1),popN*.10,paste("sd=",round(sd(r_p_pop),3))) 
   
   # numerical output of the estimates
   print(paste("rg =",rg))
@@ -101,37 +89,25 @@ confound<-function(a_x,b_x,a_y,b_y,a_p,b_p,rg,num_calcs) {
   par(mfrow=c(1,1))
   rgi<-round(rg[1],2)
   hist(estimates,main=substitute(paste(italic(r[g])~"= ",rgi)),,ylab="",xlab="",axes=F,xlim=c(-.05,1.05));axis(1,at=c(0,.5,1));abline(v=mean(estimates),lwd=3,col="blue");abline(v=(quantile(estimates,probs=.025)),lwd=1,col="green");abline(v=(quantile(estimates,probs=.975)),lwd=1,col="green")
-    # text for the mean, mode, and standard deviation (leave commented out if not desired)
-    #text(ifelse(min(estimates)<=.2,.9,.1),num_calcs*.25,"empirical estimates:")
-    #text(ifelse(min(estimates)<=.2,.9,.1),num_calcs*.20,paste("mean=",round(mean(estimates),3)))
-    #text(ifelse(min(estimates)<=.2,.9,.1),num_calcs*.15,paste("mode=",round(estimate_mode(x=estimates),3))) 
-    #text(ifelse(min(estimates)<=.2,.9,.1),num_calcs*.10,paste("sd=",round(sd(estimates),3))) 
- 
-  plot(ts(estimates),ylab="",xlab="iteration",main="estimates of % confounded",axes=F,ylim=c(0,1.5));axis(1);axis(2)
-    abline(h=mean(estimates),lwd=3,col="blue")
-    abline(h=(mean(estimates)+1.96*(sd(estimates))),lwd=1,col="green")
-    abline(h=(mean(estimates)-1.96*(sd(estimates))),lwd=1,col="green")
 }
 # ----------------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------------------------------
 # run the function that was written above 
-# with user-specified values for the beta distributions and a specific value of rg
+# with user-specified values for the beta distributions and a specific value(s) of rg
 # ----------------------------------------------------------------------------------------------
-
-setwd("/Users/jcbarnes/Desktop")
 
 # enter rg values to loop over
 rg<-seq(.0,.20,length.out=16)
 
-# test a for loop
-pdf("figure2.pdf")
+# run the function with a loop over rg
+pdf("figure.pdf")
 par(mfrow=c(4,4))
 for(i in rg) { 
 confound(a_x=10,b_x=10,       # this will produce distribution centered on 0.50 for h2 of menarche
          a_y=10,b_y=10,       # this will produce distribution centered on 0.50 for h2 of father-absence
-         a_p=35,b_p=300,      # this will produce distribution centered on 0.10 for h2 of menarche
+         a_p=35,b_p=300,      # this will produce distribution centered on 0.10 for phenotypic correlation
          rg=i,
          num_calcs=10000)
 }
